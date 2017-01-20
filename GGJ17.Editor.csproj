@@ -112,6 +112,10 @@
       <Project>{883FB022-CAEB-BF80-B170-D8B308BB862D}</Project>
       <Name>GGJ17.Plugins</Name>
     </ProjectReference>
+    <ProjectReference Include="GGJ17.csproj">
+      <Project>{E5ECEDCB-DA41-8D85-BC5C-E52CCC4B66E2}</Project>
+      <Name>GGJ17</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\CrossPlatformInput\CrossPlatformInputInitialize.cs" />
