@@ -9,7 +9,7 @@ public class Block : MonoBehaviour {
 	public enum BlockType { Sand, Dirt, Rock };
 	public BlockType type;
 
-	public bool isMoveable = true;
+	public bool isDecoration = false;
 
 	public Material transparent;
 	private Material original;
@@ -19,18 +19,24 @@ public class Block : MonoBehaviour {
 
 	void Start () {
 		gm = FindObjectOfType<GameManager>();
-		rend = GetComponent<Renderer>();
 
-		if (type == BlockType.Sand) {
-			rend.material = gm.sand;
-		} else if (type == BlockType.Dirt) {
-			rend.material = gm.dirt;
-		} else if (type == BlockType.Rock) {
-			rend.material = gm.rock;
+		if (!isDecoration) {
+			rend = GetComponent<Renderer>();
+
+			if (type == BlockType.Sand) {
+				rend.material = gm.sand;
+			} else if (type == BlockType.Dirt) {
+				rend.material = gm.dirt;
+			} else if (type == BlockType.Rock) {
+				rend.material = gm.rock;
+			}
+
+			original = rend.material;
+			originalShader = rend.material.shader;
+		} else {
+			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+			rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 		}
-
-		original = rend.material;
-		originalShader = rend.material.shader;
 	}
 
 	void Update() {
@@ -45,16 +51,23 @@ public class Block : MonoBehaviour {
 	}
 
 	public void Shifting() {
-		isFocusing = false;
-		rend.material.shader = originalShader;
-		Color col = original.color;
-		rend.material = transparent;
-		rend.material.color = new Color(col.r, col.g, col.b, 0.5f);
+
+		if (!isDecoration) {
+			isFocusing = false;
+			rend.material.shader = originalShader;
+			Color col = original.color;
+			rend.material = transparent;
+			rend.material.color = new Color(col.r, col.g, col.b, 0.5f);
+		}
+		
 		GetComponent<BoxCollider>().enabled = false;
 	}
 
 	public void ResetAll() {
-		rend.material = original;
+		if (!isDecoration) {
+			rend.material = original;
+		}
+		
 		GetComponent<BoxCollider>().enabled = true;
 	}
 }
