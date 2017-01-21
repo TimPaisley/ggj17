@@ -46,9 +46,11 @@ public class Block : MonoBehaviour {
 	public void Focusing() {
 		if (isDecoration && GetComponent<Rigidbody>() == null) {
 			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-			rb.constraints = RigidbodyConstraints.FreezeRotation |
-							RigidbodyConstraints.FreezePositionX |
-							RigidbodyConstraints.FreezePositionZ;
+			if (gameObject.name != "Beachball") {
+				rb.constraints = RigidbodyConstraints.FreezeRotation |
+								RigidbodyConstraints.FreezePositionX |
+								RigidbodyConstraints.FreezePositionZ;
+			}
 		}
 
 		if (!isDecoration) {
