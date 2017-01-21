@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour {
 	public Material sand;
 	public Material dirt;
 	public Material rock;
+    public AudioSource dig;
+    public AudioSource place;
 
 	private Block shift;
 	private Block focus;
@@ -25,13 +27,17 @@ public class GameManager : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0) && focus != null) {
 			// Picking up block
 			if (shift == null) {
-				shift = focus;
+                dig.Play();
+                shift = focus;
 				shift.Shifting();
+                
 			}
 			// Placing block
 			else {
-				shift.ResetAll();
+                place.Play();
+                shift.ResetAll();
 				shift = null;
+                
 			}
 
 			landChecker.Check();

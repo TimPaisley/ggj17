@@ -14,21 +14,14 @@ public class WaterCube : MonoBehaviour {
     }
 
 	public bool CheckUnderLand() {
-		Vector3 startPoint = transform.position+new Vector3(0,-0.5f,0);
-
 		int mask = (1 << LayerMask.NameToLayer("Land"));
+        
+        Vector3 startPoint = transform.position+new Vector3(0,-1f,0);
 
 		var hit = new RaycastHit();
 		var ray = new Ray(startPoint, Vector3.up);
 
 		return Physics.Raycast(ray, out hit, 1, mask);
-
-//		if (Physics.Raycast(ray, out hit, 1, mask)) {
-//			meshRenderer.enabled = false;
-//		}
-//		else {
-//			meshRenderer.enabled = true;
-//		}
 	}
 
 	// Update is called once per frame
@@ -38,19 +31,5 @@ public class WaterCube : MonoBehaviour {
 		} else {
 			meshRenderer.enabled = true;
 		}
-//
-//        Vector3 startPoint = transform.position+new Vector3(0,-0.5f,0);
-//
-//            int mask = (1 << LayerMask.NameToLayer("Land"));
-//
-//            var hit = new RaycastHit();
-//            var ray = new Ray(startPoint, Vector3.up);
-//        if (Physics.Raycast(ray, out hit, 1, mask))
-//        {
-//            meshRenderer.enabled = false;
-//        }
-//        else {
-//            meshRenderer.enabled = true;
-//        }  
     }
 }
