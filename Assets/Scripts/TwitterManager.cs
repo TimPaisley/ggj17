@@ -65,7 +65,9 @@ public class TwitterManager : MonoBehaviour
 	}
 
 	public void Disconnect() {
-		StopCoroutine(poller);
+		if (poller != null) {
+			StopCoroutine(poller);
+		}
 		access.Disconnect();
 	}
 
