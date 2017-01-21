@@ -47,7 +47,6 @@ public class CameraController : MonoBehaviour {
         Quaternion rotation = Quaternion.Euler(y, x, 0);
 
         distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 25, distanceMin, distanceMax);
-        Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
 
         Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
         Vector3 position = rotation * negDistance + target.position;

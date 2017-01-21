@@ -15,15 +15,22 @@ public class FloatingItem : MonoBehaviour {
 
 	float startTime;
 	ParticleSystem rippleParticles;
+	Coroutine lifecycle;
 
 	void Start() {
 		rippleParticles = ripples.GetComponent<ParticleSystem>();
 		floater.position = new Vector3(floater.position.x, sinkDepth, floater.position.z);
 
-		StartCoroutine(runLifecycle());
+		lifecycle = StartCoroutine(runLifecycle());
 	}
 
 	void Update() {
+	}
+
+	public void Disable() {
+		StopCoroutine(lifecycle);
+		floater.localPosition = new Vector3(0, 0, 0);
+		enabled = false;
 	}
 
 	IEnumerator runLifecycle() {

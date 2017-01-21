@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour {
 			if (block != null) {
 				if (shift != null) {
 					shift.transform.position = block.transform.position + hit.normal;
-				} else if (!block.isDecoration) {
+				} else {
 					block.Focusing();
 				}
 

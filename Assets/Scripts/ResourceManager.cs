@@ -61,8 +61,13 @@ public class ResourceManager : MonoBehaviour {
 		var locations = availableSpawnLocations().ToList();
 
 		if (locations.Any()) {
-			var location = locations.ElementAt(Random.Range(0, locations.Count()));
-			var position = location.ElementAt(Random.Range(0, location.Count()));
+			List<Vector2> location;
+			Vector2 position;
+
+			do {
+				location = locations.ElementAt(Random.Range(0, locations.Count()));
+				position = location.ElementAt(Random.Range(0, location.Count()));
+			} while (spawnedObjects.Keys.Contains(position));
 
 			var totalWeight = resources.Sum(res => res.spawnWeighting);
 			var target = Random.Range(0, totalWeight);
@@ -130,6 +135,8 @@ public class ResourceManager : MonoBehaviour {
 			if (!pair.Value.gameObject.activeSelf) {
 				toRemove.Add(pair.Key);
 				Destroy(pair.Value.gameObject);
+			} else if (!pair.Value.floater.enabled) {
+				toRemove.Add(pair.Key);
 			}
 		}
 

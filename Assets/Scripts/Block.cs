@@ -33,9 +33,6 @@ public class Block : MonoBehaviour {
 
 			original = rend.material;
 			originalShader = rend.material.shader;
-		} else {
-			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-			rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 		}
 	}
 
@@ -46,8 +43,17 @@ public class Block : MonoBehaviour {
 	}
 
 	public void Focusing() {
-		isFocusing = true;
-		rend.material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
+		if (isDecoration && GetComponent<Rigidbody>() == null) {
+			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+			rb.constraints = RigidbodyConstraints.FreezeRotation |
+							RigidbodyConstraints.FreezePositionX |
+							RigidbodyConstraints.FreezePositionZ;
+		}
+
+		if (!isDecoration) {
+			isFocusing = true;
+			rend.material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
+		}
 	}
 
 	public void Shifting() {
@@ -61,6 +67,11 @@ public class Block : MonoBehaviour {
 		}
 		
 		GetComponent<BoxCollider>().enabled = false;
+
+		var floater = GetComponent<FloatingItem>();
+		if (floater != null) {
+			floater.Disable();
+		}
 	}
 
 	public void ResetAll() {
