@@ -48,8 +48,12 @@ namespace Twitter
 		
 		public JSONObject( string str )
 		{
+			//UnityEngine.Debug.Log(str);
+			//UnityEngine.Debug.Log(str[0]);
+
 			if ( str == "" )
 			{
+				//UnityEngine.Debug.Log("empty");
 				type = Type.NULL;
 				return;
 			}
@@ -58,30 +62,36 @@ namespace Twitter
 			{
 	        	if ( string.Compare(str, "true", true) == 0) 
 				{
+					//UnityEngine.Debug.Log("true");
 	                type = Type.BOOL;
 	                b = true;
 	            } 
 				else if(string.Compare(str, "false", true) == 0) 
 				{
+					//UnityEngine.Debug.Log("false");
 	                type = Type.BOOL;
 	                b = false;
 	            } 
 				else if(str == "null") 
 				{
+					//UnityEngine.Debug.Log("null");
 	                type = Type.NULL;
 	            } 
 				else if(str == INFINITY)
 				{
+					//UnityEngine.Debug.Log("infinity");
 	                type = Type.NUMBER;
 	                n = double.PositiveInfinity;
 	            } 
 				else if(str == NEGINFINITY)
 				{
+					//UnityEngine.Debug.Log("neginfinity");
 	                type = Type.NUMBER;
 	                n = double.NegativeInfinity;
 	            } 
 				else if(str[0] == '"') 
 				{
+					//UnityEngine.Debug.Log("string");
 	                type = Type.STRING;
 					
 					// unescape backslashes and unicode
@@ -119,9 +129,11 @@ namespace Twitter
 						// check for number type
 	               		n = System.Convert.ToDouble(str);
 	               		type = Type.NUMBER;
+						//UnityEngine.Debug.Log("number");
 	               	} 
 					catch(System.FormatException) 
 					{
+						//UnityEngine.Debug.Log("object");
 		            	int token_tmp = 0;
 		                /*
 		                 * Checking for the following formatting (www.json.org)
@@ -186,8 +198,10 @@ namespace Twitter
 	                            }
 	                            if(str[i] == ']' || str[i] == '}')
 								{
-									if ( str[i - 1] != '[' && str[i-1] != '{' )
-	                               		props.Add(new JSONObject(str.Substring(token_tmp + 1, i - token_tmp - 1)));
+									if (str[i - 1] != '[' && str[i - 1] != '{') {
+										//UnityEngine.Debug.Log("Adding new object " + str.Substring(token_tmp + 1, i - token_tmp - 1));
+										props.Add(new JSONObject(str.Substring(token_tmp + 1, i - token_tmp - 1)));
+									}
 								}
 	                        }
 							

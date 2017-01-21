@@ -59,7 +59,7 @@ public class Block : MonoBehaviour {
 		}
 	}
 
-	public void Shifting() {
+	public virtual void Shifting() {
 
 		if (!isDecoration) {
 			isFocusing = false;

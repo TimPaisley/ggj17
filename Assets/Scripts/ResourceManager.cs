@@ -9,20 +9,21 @@ public class ResourceManager : MonoBehaviour {
 	public int spawnRegionSize = 5;
 	public int spawnRegionInnerSize = 3;
 	public Transform positioner;
-	public Transform messageBottle;
+	public TweetBlock messageBottle;
 
 	Resource[] resources;
 	float nextAppearTime;
 
 	LandChecker landChecker;
 	List<Rect> spawnLocations;
-	Dictionary<Vector2, Resource> spawnedObjects = new Dictionary<Vector2, Resource>();
+	Dictionary<Vector2, GameObject> spawnedObjects = new Dictionary<Vector2, GameObject>();
 
 	void Start() {
 		var twitterManager = FindObjectOfType<TwitterManager>();
 		if (twitterManager != null) {
 			twitterManager.OnTweet += spawnBottledResource;
 		}
+		messageBottle.gameObject.SetActive(false);
 
 		resources = GetComponentsInChildren<Resource>();
 		foreach (var resource in resources) {
@@ -39,8 +40,35 @@ public class ResourceManager : MonoBehaviour {
 	}
 
 	void spawnBottledResource(Twitter.Tweet reason) {
-		var bottle = Instantiate(messageBottle);
-		bottle.transform.position = new Vector3(0, 5, 0);
+		var position = findSpawnPosition();
+
+		if (position.x >= 0) {
+			var bottle = Instantiate(messageBottle);
+			bottle.transform.parent = positioner;
+			bottle.gameObject.SetActive(true);
+			bottle.transform.localPosition = new Vector3(position.x, 0, position.y);
+
+			var toSpawn = resources.FirstOrDefault(resource =>
+				!string.IsNullOrEmpty(resource.hashtag) && !string.IsNullOrEmpty(reason.status) && reason.status.Contains("#" + resource.hashtag)
+			);
+
+			if (toSpawn != null) {
+				var spawned = Instantiate(toSpawn);
+				bottle.child = spawned.gameObject;
+				spawned.transform.parent = bottle.transform;
+				spawned.GetComponent<FloatingItem>().enabled = false;
+				spawned.GetComponentInChildren<Block>().enabled = false;
+				spawned.GetComponentInChildren<BoxCollider>().enabled = false;
+				spawned.transform.localPosition = new Vector3(0, 1, 0);
+				spawned.gameObject.SetActive(true);
+
+				foreach (var rend in spawned.GetComponentsInChildren<Renderer>()) {
+					rend.enabled = false;
+				}
+			}
+
+			spawnedObjects.Add(position, bottle.gameObject);
+		}
 	}
 
 	IEnumerator spawnResources() {
@@ -57,6 +85,31 @@ public class ResourceManager : MonoBehaviour {
 	}
 
 	void spawnResource() {
+		var position = findSpawnPosition();
+
+		if (position.x >= 0) {
+			var totalWeight = resources.Sum(res => res.spawnWeighting);
+			var target = Random.Range(0, totalWeight);
+			var resource = resources.First(res => {
+				if (target < res.spawnWeighting) return true;
+				target -= res.spawnWeighting;
+				return false;
+			});
+
+			placeObjectAt(position, resource);
+		}
+	}
+
+	void placeObjectAt(Vector2 position, Resource resource) {
+		var instance = Instantiate(resource);
+
+		instance.transform.parent = positioner;
+		instance.transform.localPosition = new Vector3(position.x, 0, position.y);
+		instance.gameObject.SetActive(true);
+		spawnedObjects.Add(position, instance.gameObject);
+	}
+
+	Vector2 findSpawnPosition() {
 		cleanupSpawnedObjects();
 		var locations = availableSpawnLocations().ToList();
 
@@ -69,21 +122,10 @@ public class ResourceManager : MonoBehaviour {
 				position = location.ElementAt(Random.Range(0, location.Count()));
 			} while (spawnedObjects.Keys.Contains(position));
 
-			var totalWeight = resources.Sum(res => res.spawnWeighting);
-			var target = Random.Range(0, totalWeight);
-			var resource = resources.First(res => {
-				if (target < res.spawnWeighting) return true;
-				target -= res.spawnWeighting;
-				return false;
-			});
-
-			var instance = Instantiate(resource);
-
-			instance.transform.parent = positioner;
-			instance.transform.localPosition = new Vector3(position.x, 0, position.y);
-			instance.gameObject.SetActive(true);
-			spawnedObjects.Add(position, instance);
+			return position;
 		}
+
+		return new Vector2(-1, -1);
 	}
 
 	List<Rect> calculateSpawnLocations() {
@@ -132,11 +174,17 @@ public class ResourceManager : MonoBehaviour {
 		var toRemove = new List<Vector2>();
 
 		foreach (var pair in spawnedObjects) {
-			if (!pair.Value.gameObject.activeSelf) {
+			if (pair.Value == null) {
 				toRemove.Add(pair.Key);
-				Destroy(pair.Value.gameObject);
-			} else if (!pair.Value.floater.enabled) {
+			} else if (!pair.Value.activeSelf) {
 				toRemove.Add(pair.Key);
+				Destroy(pair.Value);
+			} else {
+				var floater = pair.Value.GetComponent<FloatingItem>();
+
+				if (floater != null && !floater.enabled) {
+					toRemove.Add(pair.Key);
+				}
 			}
 		}
 

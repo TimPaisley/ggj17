@@ -112,38 +112,38 @@ namespace Twitter
 		// Make tweet object from JSON
 		public Tweet( JSONObject jsonTweet )
 		{	
-			if ( jsonTweet.type != JSONObject.Type.OBJECT )
-				throw new System.Exception( "Non-valid JSON object" );
-					
-			status = jsonTweet.GetProperty ( "text" ).str;	
-			
-			user = jsonTweet.GetProperty ( "user" );
-			
-			JSONObject name = user.GetProperty ( "screen_name" );
-			userName = name.str;
-			JSONObject fullNameObj = user.GetProperty ( "name" );
-			fullName = fullNameObj.str;
-			JSONObject avatarObj = user.GetProperty ( "profile_image_url" );
-			avatarURL = DecodeStream.CleanString ( avatarObj.str );
-			
-			location = jsonTweet.GetProperty( "geo" );
-			if ( location.type == JSONObject.Type.NULL )
-				location = jsonTweet.GetProperty( "coordinates" );
-			// to add parsing for 'place' tagged tweets
-		
-			if ( location.type != JSONObject.Type.NULL )
-				coords = GetLocationData( location );
-			
-			entities = jsonTweet.GetProperty ( "entities" );
-			JSONObject hashtags = entities.GetProperty( "hashtags" );
-			if ( hashtags.type != JSONObject.Type.NULL && hashtags.props.Count > 0 )
-			{
-				tags = new string[ hashtags.props.Count ];
-				for ( int i = 0; i < tags.Length; i++ )
-					tags[i] = hashtags.props[i].GetProperty ( "text" ).str;
-			}
-			else
-				tags = new string [0];
+//			if ( jsonTweet.type != JSONObject.Type.OBJECT )
+//				throw new System.Exception( "Non-valid JSON object" );
+//					
+			status = jsonTweet.GetProperty ( "text" ).str;
+//			
+//			user = jsonTweet.GetProperty ( "user" );
+//			
+//			JSONObject name = user.GetProperty ( "screen_name" );
+//			userName = name.str;
+//			JSONObject fullNameObj = user.GetProperty ( "name" );
+//			fullName = fullNameObj.str;
+//			JSONObject avatarObj = user.GetProperty ( "profile_image_url" );
+//			avatarURL = DecodeStream.CleanString ( avatarObj.str );
+//			
+//			location = jsonTweet.GetProperty( "geo" );
+//			if ( location.type == JSONObject.Type.NULL )
+//				location = jsonTweet.GetProperty( "coordinates" );
+//			// to add parsing for 'place' tagged tweets
+//		
+//			if ( location.type != JSONObject.Type.NULL )
+//				coords = GetLocationData( location );
+//			
+//			entities = jsonTweet.GetProperty ( "entities" );
+//			JSONObject hashtags = entities.GetProperty( "hashtags" );
+//			if ( hashtags.type != JSONObject.Type.NULL && hashtags.props.Count > 0 )
+//			{
+//				tags = new string[ hashtags.props.Count ];
+//				for ( int i = 0; i < tags.Length; i++ )
+//					tags[i] = hashtags.props[i].GetProperty ( "text" ).str;
+//			}
+//			else
+//				tags = new string [0];
 		}
 		
 		// extract coords from location object
