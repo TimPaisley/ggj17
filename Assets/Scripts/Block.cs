@@ -15,7 +15,7 @@ public class Block : MonoBehaviour {
 	private Material original;
 	private Shader originalShader;
 
-	private bool isFocusing;
+	private bool isFocusing=false;
 
 	void Start () {
 		gm = FindObjectOfType<GameManager>();
