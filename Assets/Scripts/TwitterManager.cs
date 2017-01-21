@@ -1,8 +1,10 @@
 // Example setup script for Streamer
 using System;
-using Streamer;
+using Twitter;
 using System.Threading;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class TwitterManager : MonoBehaviour
 {
@@ -12,6 +14,45 @@ public class TwitterManager : MonoBehaviour
         access = new TwitterAccess();
         DontDestroyOnLoad(gameObject);
     }
+
+	public void OpenAuthUrl() {
+		access.GetOAuthURL(url => System.Diagnostics.Process.Start(url));
+	}
+
+	public void StartAuth(string pin) {
+		access.GetUserTokens(pin);
+	}
+
+	public bool LoadCredentials() {
+		if (File.Exists(credentialsFile())) {
+			var bf = new BinaryFormatter();
+			var file = File.Open(credentialsFile(), FileMode.Open);
+			var auth = (UserAuth)bf.Deserialize(file);
+			file.Close();
+
+			return access.LoadCredentials(auth);
+		}
+
+		return false;
+	}
+
+	public void SaveCredentials() {
+		var bf = new BinaryFormatter();
+		var file = File.Create(credentialsFile());
+		bf.Serialize(file, access.GetCredentials());
+		file.Close();
+	}
+
+	public void DestroySavedCredentials() {
+		if (File.Exists(credentialsFile())) {
+			File.Delete(credentialsFile());
+			access.Disconnect();
+		}
+	}
+
+	string credentialsFile() {
+		return Application.persistentDataPath + "/credentials.gd";
+	}
 	
 	//public void Main ( string[] args )
 	//{

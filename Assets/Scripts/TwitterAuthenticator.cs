@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class TwitterAuthenticator : MonoBehaviour {
     [Header("UI")]
@@ -18,8 +20,23 @@ public class TwitterAuthenticator : MonoBehaviour {
         loadingIndicator.gameObject.SetActive(false);
     }
 
+	void Start() {
+		if (twitterManager.LoadCredentials()) {
+			setError("Already authenticated! Woo!");
+			afterAuth();
+		}
+	}
+
+	void OnDestroy() {
+		twitterManager.access.Disconnect();
+	}
+
+	public void Logout() {
+		twitterManager.DestroySavedCredentials();
+	}
+
     public void OpenAuthorizationUrl() {
-        twitterManager.access.GetOAuthURL(openInBrowser);
+		twitterManager.OpenAuthUrl();
     }
 
     public void AttemptPINAuthorization() {
@@ -33,19 +50,15 @@ public class TwitterAuthenticator : MonoBehaviour {
 
         setError(null);
 
-        StartCoroutine(attemptAuth(pin));
+        StartCoroutine(doAuth(pin));
     }
 
-    void openInBrowser(string url) {
-        System.Diagnostics.Process.Start(url);
-    }
-
-    IEnumerator attemptAuth(string pin) {
+	IEnumerator doAuth(string pin) {
         float time = 0f;
 
-        loadingIndicator.gameObject.SetActive(true);
+		twitterManager.StartAuth(pin);
 
-        twitterManager.access.GetUserTokens(pin);
+        loadingIndicator.gameObject.SetActive(true);
 
         while (time < authTimeout && !twitterManager.access.IsOAuthed()) {
             yield return new WaitForSeconds(0.5f);
@@ -53,14 +66,38 @@ public class TwitterAuthenticator : MonoBehaviour {
             time += 0.5f;
         }
 
+		twitterManager.SaveCredentials();
+
         loadingIndicator.gameObject.SetActive(false);
 
         if (twitterManager.access.IsOAuthed()) {
-            Debug.Log("Success! Authed!");
+			afterAuth();
         } else {
             setError("Unable to authenticate: Timed out.");
         }
     }
+
+	void afterAuth() {
+		StartCoroutine(pollForTweets());
+	}
+
+	IEnumerator pollForTweets() {
+		twitterManager.access.AddQueryParameter(new Twitter.QueryTrack(twitterManager.access.screenName));
+		twitterManager.access.Connect(false);
+		Debug.Log("Listening for tweets to @" + twitterManager.access.screenName);
+
+		while (true) {
+			if (twitterManager.access.tweets.Count > 0) {
+				Twitter.Tweet newTweet = twitterManager.access.tweets.Dequeue();
+				if (newTweet.status.Contains("@" + twitterManager.access.screenName)) {
+					Debug.Log("TWEET!");
+					setError(newTweet.status);
+				}
+			}
+
+			yield return new WaitForEndOfFrame();
+		}
+	}
 
     void setError(string error) {
         if (string.IsNullOrEmpty(error)) {

@@ -19,12 +19,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Streamer
+namespace Twitter
 {
 	public class TwitterAccess
 	{
-		private const string streamFilterURL = "https://stream.twitter.com/1/statuses/filter.json";
-		private const string streamSampleURL = "https://stream.twitter.com/1/statuses/sample.json";
+		private const string streamFilterURL = "https://stream.twitter.com/1.1/statuses/filter.json";
+
+		public string screenName { get { return oAuth.screenName; } }
 		
 		// for the streaming API, you can use basic authentication...for now...
 		private string username;
@@ -110,9 +111,9 @@ namespace Streamer
 			this.password = password;
 		}
 		
-		public string GetOAuthString()
+		public UserAuth GetCredentials()
 		{
-			return oAuth.GetUserAuth ();
+			return oAuth.ExportUserAuth();
 		}
 		
 		/// <summary>
@@ -124,9 +125,9 @@ namespace Streamer
 		/// <param name='savedAuth'>
 		/// String from previous GetOAuthString call
 		/// </param>
-		public bool OAuthWithString( string savedAuth )
+		public bool LoadCredentials(UserAuth auth)
 		{
-			return oAuth.AuthoriseFromSave ( savedAuth );
+			return oAuth.AuthoriseFromSave(auth);
 		}
 		
 		public bool IsOAuthed()
@@ -183,7 +184,7 @@ namespace Streamer
 			}
 			
 			// make and authorise webrequest
-			string url = queries.Count == 0 ? streamSampleURL : streamFilterURL;
+			string url = streamFilterURL;
 			connectingRequest = WebRequest.Create( url );
 			
 			if ( useBasicAuth )
@@ -215,8 +216,8 @@ namespace Streamer
 			
 			if ( connectingThread != null )
 				connectingThread.Abort ();	
-			
-			tweetParser.isParsingPaused = true;
+
+			tweetParser.Stop();
 		}
 		
 		private void StartStream( object postString )

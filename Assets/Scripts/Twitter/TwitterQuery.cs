@@ -7,7 +7,7 @@
 using System.Text;
 using System.Collections.Generic;
 
-namespace Streamer
+namespace Twitter
 {
 	public abstract class TwitterQuery 
 	{

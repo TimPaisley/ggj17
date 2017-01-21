@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Streamer
+namespace Twitter
 {
 	public class DecodeStream 
 	{	
@@ -50,6 +50,10 @@ namespace Streamer
 				{
 					string newTweetStr = tweetStringQueue.Dequeue();
 	
+					if (string.IsNullOrEmpty(newTweetStr)) {
+						continue;
+					}
+
 					try
 					{
 						JSONObject newObj = new JSONObject( newTweetStr );
@@ -70,8 +74,8 @@ namespace Streamer
 					}
 				}
 				
-				Thread.Sleep ( 100 );
-			}		
+				Thread.Sleep(100);
+			}
 		}
 		
 		/// <summary>

@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
-namespace Streamer
+namespace Twitter
 {
 	public class JSONObject
 	{

@@ -9,7 +9,7 @@ using System.Text;
 using System.Collections.Generic;
 
 // location query - specified by bounding boxes to return results from
-namespace Streamer
+namespace Twitter
 {
 	public class QueryLocations : TwitterQuery
 	{

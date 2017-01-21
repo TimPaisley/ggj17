@@ -33,8 +33,15 @@ using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
-namespace Streamer
+namespace Twitter
 {
+	[Serializable]
+	public class UserAuth {
+		public string token;
+		public string secret;
+		public string screenName;
+	}
+
 	public class OAuth 
 	{		
 		/* -~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -47,6 +54,7 @@ namespace Streamer
 		
 		private string token = "";			// to be set by following token request process
 		private string tokenSecret = "";	//
+		public string screenName = "";
 		
 		struct AuthRequestInfo{
 			public HttpWebRequest request;
@@ -122,6 +130,7 @@ namespace Streamer
 						{
 							token = reply[0].TrimStart ( "oauth_token=".ToCharArray() );
 							tokenSecret = reply[1].TrimStart ( "oauth_token_secret=".ToCharArray () );
+
 							if ( reply[2].EndsWith ( "true" ) )
 								successfulRequest = true;
 						}
@@ -210,6 +219,7 @@ namespace Streamer
 						{
 							token = reply[0].TrimStart ( "oauth_token=".ToCharArray() );
 							tokenSecret = reply[1].TrimStart ( "oauth_token_secret=".ToCharArray () );
+							screenName = reply[3].TrimStart("screen_name=".ToCharArray());
 							successfulRequest = true;
 						}
 					}
@@ -315,25 +325,25 @@ namespace Streamer
 		/// <returns>
 		/// The user auth.
 		/// </returns>
-		public string GetUserAuth()
+		public UserAuth ExportUserAuth()
 		{
-			if ( status == OAuthStatus.Authorised )
-				return token + "&" + tokenSecret;
+			if (status == OAuthStatus.Authorised)
+				return new UserAuth() { token = token, secret = tokenSecret, screenName = screenName };
 			else
-				return "";
+				return null;
 		}
 		
-		public bool AuthoriseFromSave( string savedAuthInfo )
+		public bool AuthoriseFromSave(UserAuth savedAuth)
 		{
-			string[] splitInfo = savedAuthInfo.Split ( "&".ToCharArray() );
-			if ( splitInfo.Length != 2 )
+			if (!string.IsNullOrEmpty(savedAuth.token) && !string.IsNullOrEmpty(savedAuth.token) && !string.IsNullOrEmpty(savedAuth.screenName)) {
+				token = savedAuth.token;
+				tokenSecret = savedAuth.secret;
+				screenName = savedAuth.screenName;
+				_status = OAuthStatus.Authorised;
+				return true;
+			} else {
 				return false;
-			
-			token = splitInfo[0];
-			tokenSecret = splitInfo[1];
-			
-			_status = OAuthStatus.Authorised;
-			return true;
+			}
 		}
 
         public bool MyRemoteCertificateValidationCallback (System.Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
