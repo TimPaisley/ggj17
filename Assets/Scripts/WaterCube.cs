@@ -14,13 +14,13 @@ public class WaterCube : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        Vector3 startPoint = transform.position;
+        Vector3 startPoint = transform.position+new Vector3(0,-0.5f,0);
 
             int mask = (1 << LayerMask.NameToLayer("Land"));
 
             var hit = new RaycastHit();
             var ray = new Ray(startPoint, Vector3.up);
-        if (Physics.Raycast(ray, out hit, 0.9f, mask))
+        if (Physics.Raycast(ray, out hit, 1, mask))
         {
             meshRenderer.enabled = false;
         }
