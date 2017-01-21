@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (Input.GetMouseButton(2)) {
-			float h = -speed * Input.GetAxis("Mouse X");
+		if (Input.GetMouseButton(1)) {
+			float h = speed * Input.GetAxis("Mouse X");
 			transform.parent.transform.Rotate(0, h, 0);
 		}
 	}
