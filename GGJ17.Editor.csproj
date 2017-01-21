@@ -117,6 +117,7 @@
     <Compile Include="Assets\Editor\CrossPlatformInput\CrossPlatformInputInitialize.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\%24self_illuminated_outlined_diffuse_113.shader" />
     <None Include="Assets\Shaders\Silhouette.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
