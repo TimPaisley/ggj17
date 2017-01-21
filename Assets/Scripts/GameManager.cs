@@ -14,9 +14,11 @@ public class GameManager : MonoBehaviour {
 
 	private Block shift;
 	private Block focus;
+
+	LandChecker landChecker;
 	
 	void Start () {
-
+		landChecker = FindObjectOfType<LandChecker>();
 	}
 	
 	void Update () {
@@ -30,7 +32,6 @@ public class GameManager : MonoBehaviour {
 				shift.Shifting();
                 
 			}
-
 			// Placing block
 			else {
                 place.Play();
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour {
 				shift = null;
                 
 			}
+
+			landChecker.Check();
 		}
 	}
 
@@ -63,6 +66,10 @@ public class GameManager : MonoBehaviour {
 				focus = null;
 			}
 		} else {
+			if (shift != null) {
+				shift.transform.position = new Vector3(0.0f, 1000.0f, 0.0f);
+			}
+
 			focus = null;
 		}
 	}

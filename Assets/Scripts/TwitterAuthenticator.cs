@@ -10,6 +10,9 @@ public class TwitterAuthenticator : MonoBehaviour {
     public Text pinText;
     public RectTransform errorMessage;
     public RectTransform loadingIndicator;
+	public RectTransform notAuthedPanel;
+	public RectTransform authedPanel;
+	public Text authedText;
 
     [Header("Auth")]
     public TwitterManager twitterManager;
@@ -22,8 +25,12 @@ public class TwitterAuthenticator : MonoBehaviour {
 
 	void Start() {
 		if (twitterManager.LoadCredentials()) {
-			setError("Already authenticated! Woo!");
-			afterAuth();
+			notAuthedPanel.gameObject.SetActive(false);
+			authedPanel.gameObject.SetActive(true);
+			authedText.text = "You're logged in as @" + twitterManager.access.screenName + "!";
+		} else {
+			notAuthedPanel.gameObject.SetActive(true);
+			authedPanel.gameObject.SetActive(false);
 		}
 	}
 
@@ -33,6 +40,8 @@ public class TwitterAuthenticator : MonoBehaviour {
 
 	public void Logout() {
 		twitterManager.DestroySavedCredentials();
+		notAuthedPanel.gameObject.SetActive(true);
+		authedPanel.gameObject.SetActive(false);
 	}
 
     public void OpenAuthorizationUrl() {
@@ -53,6 +62,10 @@ public class TwitterAuthenticator : MonoBehaviour {
         StartCoroutine(doAuth(pin));
     }
 
+	public void StartGame() {
+		StartCoroutine(pollForTweets());
+	}
+
 	IEnumerator doAuth(string pin) {
         float time = 0f;
 
@@ -71,15 +84,11 @@ public class TwitterAuthenticator : MonoBehaviour {
         loadingIndicator.gameObject.SetActive(false);
 
         if (twitterManager.access.IsOAuthed()) {
-			afterAuth();
+			StartGame();
         } else {
             setError("Unable to authenticate: Timed out.");
         }
     }
-
-	void afterAuth() {
-		StartCoroutine(pollForTweets());
-	}
 
 	IEnumerator pollForTweets() {
 		twitterManager.access.AddQueryParameter(new Twitter.QueryTrack(twitterManager.access.screenName));
