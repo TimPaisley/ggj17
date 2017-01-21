@@ -57,6 +57,10 @@ public class GameManager : MonoBehaviour {
 				focus = null;
 			}
 		} else {
+			if (shift != null) {
+				shift.transform.position = new Vector3(0.0f, 1000.0f, 0.0f);
+			}
+
 			focus = null;
 		}
 	}
