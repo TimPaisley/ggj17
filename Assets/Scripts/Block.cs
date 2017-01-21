@@ -10,6 +10,7 @@ public class Block : MonoBehaviour {
 	public BlockType type;
 
 	public bool isDecoration = false;
+	public bool isTree = false;
 
 	public Material transparent;
 	private Material original;

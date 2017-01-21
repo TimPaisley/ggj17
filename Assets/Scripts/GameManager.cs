@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour {
     public AudioSource dig;
     public AudioSource place;
 
+	public Block treePrefab;
+
 	private Block shift;
 	private Block focus;
 
@@ -36,6 +38,10 @@ public class GameManager : MonoBehaviour {
 			else {
                 place.Play();
                 shift.ResetAll();
+				if (shift.isTree) {
+					Instantiate(treePrefab, shift.transform.position, Quaternion.identity);
+					shift.gameObject.SetActive(false);
+				}
 				shift = null;
                 
 			}
