@@ -12,9 +12,11 @@ public class GameManager : MonoBehaviour {
 
 	private Block shift;
 	private Block focus;
+
+	LandChecker landChecker;
 	
 	void Start () {
-
+		landChecker = FindObjectOfType<LandChecker>();
 	}
 	
 	void Update () {
@@ -26,12 +28,13 @@ public class GameManager : MonoBehaviour {
 				shift = focus;
 				shift.Shifting();
 			}
-
 			// Placing block
 			else {
 				shift.ResetAll();
 				shift = null;
 			}
+
+			landChecker.Check();
 		}
 	}
 
