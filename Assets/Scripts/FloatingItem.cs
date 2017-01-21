@@ -18,7 +18,7 @@ public class FloatingItem : MonoBehaviour {
 
 	void Start() {
 		rippleParticles = ripples.GetComponent<ParticleSystem>();
-		floater.position = new Vector3(floater.position.x, sinkDepth, floater.position.y);
+		floater.position = new Vector3(floater.position.x, sinkDepth, floater.position.z);
 
 		StartCoroutine(runLifecycle());
 	}
@@ -52,6 +52,6 @@ public class FloatingItem : MonoBehaviour {
 			yield return new WaitForEndOfFrame();
 		}
 
-		Destroy(gameObject);
+		gameObject.SetActive(false);
 	}
 }
