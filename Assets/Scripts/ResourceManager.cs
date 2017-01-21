@@ -9,6 +9,7 @@ public class ResourceManager : MonoBehaviour {
 	public int spawnRegionSize = 5;
 	public int spawnRegionInnerSize = 3;
 	public Transform positioner;
+	public Transform messageBottle;
 
 	Resource[] resources;
 	float nextAppearTime;
@@ -18,6 +19,11 @@ public class ResourceManager : MonoBehaviour {
 	Dictionary<Vector2, Resource> spawnedObjects = new Dictionary<Vector2, Resource>();
 
 	void Start() {
+		var twitterManager = FindObjectOfType<TwitterManager>();
+		if (twitterManager != null) {
+			twitterManager.OnTweet += spawnBottledResource;
+		}
+
 		resources = GetComponentsInChildren<Resource>();
 		foreach (var resource in resources) {
 			resource.gameObject.SetActive(false);
@@ -30,6 +36,11 @@ public class ResourceManager : MonoBehaviour {
 		spawnLocations = calculateSpawnLocations();
 
 		StartCoroutine(spawnResources());
+	}
+
+	void spawnBottledResource(Twitter.Tweet reason) {
+		var bottle = Instantiate(messageBottle);
+		bottle.transform.position = new Vector3(0, 5, 0);
 	}
 
 	IEnumerator spawnResources() {

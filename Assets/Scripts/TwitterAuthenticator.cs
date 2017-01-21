@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
@@ -34,10 +35,6 @@ public class TwitterAuthenticator : MonoBehaviour {
 		}
 	}
 
-	void OnDestroy() {
-		twitterManager.access.Disconnect();
-	}
-
 	public void Logout() {
 		twitterManager.DestroySavedCredentials();
 		notAuthedPanel.gameObject.SetActive(true);
@@ -63,7 +60,8 @@ public class TwitterAuthenticator : MonoBehaviour {
     }
 
 	public void StartGame() {
-		StartCoroutine(pollForTweets());
+		twitterManager.StartListening();
+		SceneManager.LoadScene("SpawnTesting");
 	}
 
 	IEnumerator doAuth(string pin) {
@@ -90,23 +88,7 @@ public class TwitterAuthenticator : MonoBehaviour {
         }
     }
 
-	IEnumerator pollForTweets() {
-		twitterManager.access.AddQueryParameter(new Twitter.QueryTrack(twitterManager.access.screenName));
-		twitterManager.access.Connect(false);
-		Debug.Log("Listening for tweets to @" + twitterManager.access.screenName);
 
-		while (true) {
-			if (twitterManager.access.tweets.Count > 0) {
-				Twitter.Tweet newTweet = twitterManager.access.tweets.Dequeue();
-				if (newTweet.status.Contains("@" + twitterManager.access.screenName)) {
-					Debug.Log("TWEET!");
-					setError(newTweet.status);
-				}
-			}
-
-			yield return new WaitForEndOfFrame();
-		}
-	}
 
     void setError(string error) {
         if (string.IsNullOrEmpty(error)) {
