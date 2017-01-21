@@ -69,7 +69,7 @@ public class Block : MonoBehaviour {
 			rend.material.color = new Color(col.r, col.g, col.b, 0.5f);
 		}
 		
-		GetComponent<BoxCollider>().enabled = false;
+		GetComponent<Collider>().enabled = false;
 
 		var floater = GetComponent<FloatingItem>();
 		if (floater != null) {
@@ -82,6 +82,6 @@ public class Block : MonoBehaviour {
 			rend.material = original;
 		}
 		
-		GetComponent<BoxCollider>().enabled = true;
+		GetComponent<Collider>().enabled = true;
 	}
 }
