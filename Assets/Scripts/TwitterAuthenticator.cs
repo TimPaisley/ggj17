@@ -36,6 +36,7 @@ public class TwitterAuthenticator : MonoBehaviour {
 	}
 
 	public void Logout() {
+		twitterManager.Disconnect();
 		twitterManager.DestroySavedCredentials();
 		notAuthedPanel.gameObject.SetActive(true);
 		authedPanel.gameObject.SetActive(false);
@@ -61,7 +62,7 @@ public class TwitterAuthenticator : MonoBehaviour {
 
 	public void StartGame() {
 		twitterManager.StartListening();
-		SceneManager.LoadScene("SpawnTesting");
+		SceneManager.LoadScene("UITesting");
 	}
 
 	IEnumerator doAuth(string pin) {

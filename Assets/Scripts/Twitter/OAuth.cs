@@ -81,7 +81,7 @@ namespace Twitter
 		public void StartOAuthRequest( string requestUrl, string userRedirectUrl, System.Action<string> receiveUrlCallback )
 		{
 			// only allow one request at a time
-			if ( status == OAuthStatus.RequestingTokenURL || status == OAuthStatus.RequestingUserTokens || status == OAuthStatus.HasRequestTokenUrl )
+			if ( status == OAuthStatus.RequestingUserTokens || status == OAuthStatus.HasRequestTokenUrl )
 				return;
 			_status = OAuthStatus.RequestingTokenURL;
 
