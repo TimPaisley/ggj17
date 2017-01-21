@@ -53,7 +53,11 @@ public class GameManager : MonoBehaviour {
 				if (shift != null) {
 					shift.transform.position = new Vector3(0.0f, 1000.0f, 0.0f);
 				}
+
+				focus = null;
 			}
+		} else {
+			focus = null;
 		}
 	}
 }
