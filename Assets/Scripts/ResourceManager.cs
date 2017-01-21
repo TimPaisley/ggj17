@@ -23,6 +23,8 @@ public class ResourceManager : MonoBehaviour {
 			resource.gameObject.SetActive(false);
 		}
 
+		Debug.Log(resources.Count());
+
 		nextAppearTime = Random.Range(minAppearTime, maxAppearTime);
 		landChecker = FindObjectOfType<LandChecker>();
 		spawnLocations = calculateSpawnLocations();
@@ -48,11 +50,17 @@ public class ResourceManager : MonoBehaviour {
 		var locations = availableSpawnLocations().ToList();
 
 		if (locations.Any()) {
-			var location = locations.ElementAt(Random.Range(0, locations.Count() - 1));
-			var position = location.ElementAt(Random.Range(0, location.Count() - 1));
-			Debug.Log(position);
+			var location = locations.ElementAt(Random.Range(0, locations.Count()));
+			var position = location.ElementAt(Random.Range(0, location.Count()));
 
-			var resource = resources[Random.Range(0, resources.Length - 1)];
+			var totalWeight = resources.Sum(res => res.spawnWeighting);
+			var target = Random.Range(0, totalWeight);
+			var resource = resources.First(res => {
+				if (target < res.spawnWeighting) return true;
+				target -= res.spawnWeighting;
+				return false;
+			});
+
 			var instance = Instantiate(resource);
 
 			instance.transform.parent = positioner;
