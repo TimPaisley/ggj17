@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
                 
 			}
 			// Placing block
-			else {
+			else if (!focus.isDecoration) {
                 place.Play();
                 shift.ResetAll();
 				if (shift.isTree) {
