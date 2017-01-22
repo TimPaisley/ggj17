@@ -58,7 +58,7 @@ public class ResourceManager : MonoBehaviour {
 			bottle.tweet = reason;
 
 			var toSpawn = resources.FirstOrDefault(resource =>
-				!string.IsNullOrEmpty(resource.hashtag) && !string.IsNullOrEmpty(reason.status) && reason.status.Contains("#" + resource.hashtag)
+				!string.IsNullOrEmpty(resource.hashtag) && !string.IsNullOrEmpty(reason.status) && reason.status.ToLower().Contains("#" + resource.hashtag)
 			);
 
 			if (toSpawn != null) {

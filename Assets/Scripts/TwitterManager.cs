@@ -80,15 +80,13 @@ public class TwitterManager : MonoBehaviour
 		while (true) {
 			if (access.IsOAuthed() && access.tweets.Count > 0) {
 				Tweet newTweet = access.tweets.Dequeue();
-				if (newTweet.status.Contains("@" + access.screenName) && OnTweet != null) {
+				if (newTweet.status.Contains("@" + access.screenName) && newTweet.status.ToLower().Contains("#tisle") && OnTweet != null) {
 					Debug.Log("TWEET!");
 					OnTweet(newTweet);
 				}
 			}
 
-//			yield return new WaitForEndOfFrame();
-//			Debug.Log("CHECKING");
-			yield return new WaitForSeconds(3);
+			yield return new WaitForEndOfFrame();
 		}
 	}
 }

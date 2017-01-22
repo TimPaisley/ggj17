@@ -75,8 +75,7 @@ namespace Twitter
 					}
 				}
 
-//				Debug.Log("PARSING");
-				Thread.Sleep(1000);
+				Thread.Sleep(100);
 			}
 		}
 		
