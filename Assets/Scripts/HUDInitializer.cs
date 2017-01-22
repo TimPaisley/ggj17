@@ -9,7 +9,7 @@ public class HUDInitializer : MonoBehaviour {
 	void Start () {
 		var twitterManager = FindObjectOfType<TwitterManager>();
 		if (twitterManager != null) {
-			handleAndHashtag.text = "@" + twitterManager.access.screenName + " #Tisle";
+			handleAndHashtag.text = "@" + twitterManager.access.screenName + " #tisle";
 		}
 	}
 }

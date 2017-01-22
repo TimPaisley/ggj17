@@ -35,7 +35,7 @@ public class TweetBlock : Block {
 
 	IEnumerator showTweetMessage() {
 		tweetText.text = tweet.status;
-		tweetSender.text = "Kind regards, " + tweet.fullName + " (" + tweet.userName + ")";
+		tweetSender.text = "Kind regards, " + tweet.fullName + " (@" + tweet.userName + ")";
 
 		foreach (var image in tweetContainer.GetComponentsInChildren<Image>()) {
 			image.enabled = true;
