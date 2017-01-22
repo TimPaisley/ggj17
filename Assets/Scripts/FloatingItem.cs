@@ -28,7 +28,10 @@ public class FloatingItem : MonoBehaviour {
 	}
 
 	public void Disable() {
-		StopCoroutine(lifecycle);
+		if (lifecycle != null) {
+			StopCoroutine(lifecycle);
+		}
+		
 		floater.localPosition = new Vector3(0, 0, 0);
 		enabled = false;
 	}
