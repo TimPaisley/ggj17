@@ -18,6 +18,8 @@ public class TweetBlock : Block {
 	}
 
 	public override void Shifting() {
+		Debug.Log("SHITFING AN TWEET");
+
 		foreach (var rend in GetComponentsInChildren<Renderer>()) {
 			rend.enabled = false;
 		}
@@ -26,6 +28,9 @@ public class TweetBlock : Block {
 			foreach (var rend in child.GetComponentsInChildren<Renderer>()) {
 				rend.enabled = true;
 			}
+
+			child.GetComponentInChildren<Collider>().enabled = true;
+			GetComponent<BoxCollider>().enabled = false;
 
 			base.Shifting();
 		}

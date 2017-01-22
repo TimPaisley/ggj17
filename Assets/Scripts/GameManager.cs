@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour {
 		RaycastForBlock();
 		
 		if (Input.GetMouseButtonDown(0) && focus != null) {
+			Debug.Log("FOCUS");
+			Debug.Log(focus);
+
 			// Picking up block
 			if (shift == null) {
 				if (focus.isDecoration) {

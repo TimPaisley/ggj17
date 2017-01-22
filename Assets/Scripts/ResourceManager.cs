@@ -67,8 +67,14 @@ public class ResourceManager : MonoBehaviour {
 				spawned.transform.parent = bottle.transform;
 				spawned.GetComponent<FloatingItem>().enabled = false;
 				spawned.GetComponentInChildren<Block>().enabled = false;
-				bottle.GetComponent<BoxCollider>().enabled = false;
-				spawned.transform.localPosition = new Vector3(0, 1, 0);
+				spawned.GetComponentInChildren<Collider>().enabled = false;
+
+				if (spawned.name.Contains("Flag") || spawned.name.Contains("Boot")) {
+					spawned.transform.localPosition = new Vector3(0, 1, 0);
+				} else {
+					spawned.transform.localPosition = new Vector3(0, 0, 0);
+				}
+
 				spawned.gameObject.SetActive(true);
 
 				foreach (var rend in spawned.GetComponentsInChildren<Renderer>()) {

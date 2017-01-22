@@ -71,7 +71,9 @@ public class Block : MonoBehaviour {
 			}
 		}
 
-		GetComponent<Collider>().enabled = false;
+		foreach (var coll in GetComponentsInChildren<Collider>()) {
+			coll.enabled = false;
+		}
 
 		var floater = GetComponent<FloatingItem>();
 		if (floater != null) {
@@ -84,6 +86,10 @@ public class Block : MonoBehaviour {
 			rend.material = original;
 		}
 		
-		GetComponent<Collider>().enabled = true;
+		foreach (var coll in GetComponentsInChildren<Collider>()) {
+			if (coll.gameObject.tag != "Bottle") {
+				coll.enabled = true;
+			}
+		}
 	}
 }
