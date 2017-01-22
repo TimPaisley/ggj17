@@ -16,15 +16,25 @@ public class TwitterAuthenticator : MonoBehaviour {
 	public Text authedText;
 
     [Header("Auth")]
-    public TwitterManager twitterManager;
+	public GameObject twitterManagerWrapper;
     public int authTimeout = 10;
+
+	TwitterManager twitterManager;
 
     void Awake() {
         errorMessage.gameObject.SetActive(false);
         loadingIndicator.gameObject.SetActive(false);
+
+		twitterManager = FindObjectOfType<TwitterManager>();
+
+		if (twitterManager == null) {
+			twitterManager = twitterManagerWrapper.AddComponent<TwitterManager>();
+		}
     }
 
 	void Start() {
+		twitterManager.access.Disconnect();
+
 		if (twitterManager.LoadCredentials()) {
 			notAuthedPanel.gameObject.SetActive(false);
 			authedPanel.gameObject.SetActive(true);
@@ -36,7 +46,6 @@ public class TwitterAuthenticator : MonoBehaviour {
 	}
 
 	public void Logout() {
-		twitterManager.Disconnect();
 		twitterManager.DestroySavedCredentials();
 		notAuthedPanel.gameObject.SetActive(true);
 		authedPanel.gameObject.SetActive(false);
@@ -61,7 +70,7 @@ public class TwitterAuthenticator : MonoBehaviour {
     }
 
 	public void StartGame() {
-		twitterManager.StartListening();
+		twitterManager.Connect();
 		SceneManager.LoadScene("UITesting");
 	}
 
@@ -88,8 +97,6 @@ public class TwitterAuthenticator : MonoBehaviour {
             setError("Unable to authenticate: Timed out.");
         }
     }
-
-
 
     void setError(string error) {
         if (string.IsNullOrEmpty(error)) {

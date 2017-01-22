@@ -39,7 +39,7 @@ namespace Twitter
 		private Queue<string> tweetStringQueue;	// this holds tweets as they arrive
 		private int maxInQueue = 2048;
 		
-		private DecodeStream tweetParser;
+		public DecodeStream tweetParser;
 		public Queue<Tweet> tweets;		// this holds processed tweets
 		
 		// network backoff times
@@ -207,6 +207,7 @@ namespace Twitter
 		// disconnect streams if there are any
 		public void Disconnect()
 		{
+			Debug.Log("Disconnecting");
 			if ( connectionIsOpen )
 			{
 				currentResponse.Close ();
@@ -215,9 +216,9 @@ namespace Twitter
 			}
 			
 			if ( connectingThread != null )
-				connectingThread.Abort ();	
+				connectingThread.Abort ();
 
-			tweetParser.Stop();
+			tweetParser.isParsingPaused = true;
 		}
 		
 		private void StartStream( object postString )

@@ -60,5 +60,6 @@ public class FloatingItem : MonoBehaviour {
 		}
 
 		gameObject.SetActive(false);
+		StopCoroutine(lifecycle);
 	}
 }
