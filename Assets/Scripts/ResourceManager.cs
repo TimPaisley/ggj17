@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ResourceManager : MonoBehaviour {
 	public float minAppearTime = 1f;
@@ -41,7 +42,9 @@ public class ResourceManager : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		twitterManager.OnTweet -= spawnBottledResource;
+		if (twitterManager != null) {
+			twitterManager.OnTweet -= spawnBottledResource;
+		}
 	}
 
 	void spawnBottledResource(Twitter.Tweet reason) {
@@ -52,6 +55,7 @@ public class ResourceManager : MonoBehaviour {
 			bottle.transform.parent = positioner;
 			bottle.gameObject.SetActive(true);
 			bottle.transform.localPosition = new Vector3(position.x, 0, position.y);
+			bottle.tweet = reason;
 
 			var toSpawn = resources.FirstOrDefault(resource =>
 				!string.IsNullOrEmpty(resource.hashtag) && !string.IsNullOrEmpty(reason.status) && reason.status.Contains("#" + resource.hashtag)
