@@ -44,14 +44,7 @@ public class Block : MonoBehaviour {
 	}
 
 	public void Focusing() {
-		if (isDecoration && GetComponent<Rigidbody>() == null) {
-			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-			if (gameObject.name != "Beachball") {
-				rb.constraints = RigidbodyConstraints.FreezeRotation |
-								RigidbodyConstraints.FreezePositionX |
-								RigidbodyConstraints.FreezePositionZ;
-			}
-		}
+		
 
 		if (!isDecoration) {
 			isFocusing = true;
@@ -68,7 +61,16 @@ public class Block : MonoBehaviour {
 			rend.material = transparent;
 			rend.material.color = new Color(col.r, col.g, col.b, 0.5f);
 		}
-		
+
+		if (isDecoration && GetComponent<Rigidbody>() == null) {
+			Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+			if (gameObject.name != "Beachball") {
+				rb.constraints = RigidbodyConstraints.FreezeRotation |
+								RigidbodyConstraints.FreezePositionX |
+								RigidbodyConstraints.FreezePositionZ;
+			}
+		}
+
 		GetComponent<Collider>().enabled = false;
 
 		var floater = GetComponent<FloatingItem>();
