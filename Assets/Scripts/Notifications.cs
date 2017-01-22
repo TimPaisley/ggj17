@@ -19,10 +19,12 @@ public class Notifications : MonoBehaviour {
 	}
 
 	private IEnumerator CreateNotification(Twitter.Tweet tweet) {
+		GetComponent<AudioSource>().Play();
+
 		Text textui = Instantiate(notification);
-		textui.text = tweet.userName + " has sent you a bottle!";
+		textui.text = "@" + tweet.userName + " has sent you a bottle!";
 		textui.transform.SetParent(this.transform, false);
-		Debug.Log(tweet.userName + " has sent you a bottle!");
+		Debug.Log("@" + tweet.userName + " has sent you a bottle!");
 		yield return new WaitForSeconds(5);
 		GameObject.Destroy(textui);
 	}
