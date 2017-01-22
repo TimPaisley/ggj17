@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	public Material rock;
     public AudioSource dig;
     public AudioSource place;
+	public AudioSource pickup;
 
 	public Block treePrefab;
 
@@ -29,7 +30,12 @@ public class GameManager : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0) && focus != null) {
 			// Picking up block
 			if (shift == null) {
-                dig.Play();
+				if (focus.isDecoration) {
+					pickup.Play();
+				} else {
+					dig.Play();
+				}
+                
                 shift = focus;
 				shift.Shifting();
                 
