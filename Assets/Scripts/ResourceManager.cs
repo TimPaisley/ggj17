@@ -17,9 +17,10 @@ public class ResourceManager : MonoBehaviour {
 	LandChecker landChecker;
 	List<Rect> spawnLocations;
 	Dictionary<Vector2, GameObject> spawnedObjects = new Dictionary<Vector2, GameObject>();
+	TwitterManager twitterManager;
 
 	void Start() {
-		var twitterManager = FindObjectOfType<TwitterManager>();
+		twitterManager = FindObjectOfType<TwitterManager>();
 		if (twitterManager != null) {
 			twitterManager.OnTweet += spawnBottledResource;
 		}
@@ -37,6 +38,10 @@ public class ResourceManager : MonoBehaviour {
 		spawnLocations = calculateSpawnLocations();
 
 		StartCoroutine(spawnResources());
+	}
+
+	void OnDestroy() {
+		twitterManager.OnTweet -= spawnBottledResource;
 	}
 
 	void spawnBottledResource(Twitter.Tweet reason) {

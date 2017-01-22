@@ -37,8 +37,9 @@ namespace Twitter
 		// stop any JSON procesing
 		public void Stop()
 		{
-			if ( parseThread != null )
-				parseThread.Abort ();
+			if (parseThread != null) {
+				parseThread.Abort();
+			}
 		}
 		
 		// process all tweets in tweetStringQueue
@@ -73,8 +74,9 @@ namespace Twitter
 						Debug.Log( "Invalid object in json string" );
 					}
 				}
-				
-				Thread.Sleep(100);
+
+//				Debug.Log("PARSING");
+				Thread.Sleep(1000);
 			}
 		}
 		

@@ -18,11 +18,17 @@ public class TwitterManager : MonoBehaviour
 
     void Awake() {
         access = new TwitterAccess();
+		poller = StartCoroutine(pollForTweets());
+
         DontDestroyOnLoad(gameObject);
     }
 
 	void OnDestroy() {
-		Disconnect();
+		if (poller != null) {
+			StopCoroutine(poller);
+		}
+		access.Disconnect();
+		access.tweetParser.Stop();
 	}
 
 	public void OpenAuthUrl() {
@@ -31,6 +37,12 @@ public class TwitterManager : MonoBehaviour
 
 	public void StartAuth(string pin) {
 		access.GetUserTokens(pin);
+	}
+
+	public void Connect() {
+		access.AddQueryParameter(new Twitter.QueryTrack(access.screenName));
+		access.Connect(false);
+		Debug.Log("Listening for tweets to @" + access.screenName);
 	}
 
 	public bool LoadCredentials() {
@@ -56,19 +68,8 @@ public class TwitterManager : MonoBehaviour
 	public void DestroySavedCredentials() {
 		if (File.Exists(credentialsFile())) {
 			File.Delete(credentialsFile());
-			Disconnect();
+			access.Disconnect();
 		}
-	}
-
-	public void StartListening() {
-		poller = StartCoroutine(pollForTweets());
-	}
-
-	public void Disconnect() {
-		if (poller != null) {
-			StopCoroutine(poller);
-		}
-		access.Disconnect();
 	}
 
 	string credentialsFile() {
@@ -76,20 +77,18 @@ public class TwitterManager : MonoBehaviour
 	}
 
 	IEnumerator pollForTweets() {
-		access.AddQueryParameter(new Twitter.QueryTrack(access.screenName));
-		access.Connect(false);
-		Debug.Log("Listening for tweets to @" + access.screenName);
-
 		while (true) {
-			if (access.tweets.Count > 0) {
-				Twitter.Tweet newTweet = access.tweets.Dequeue();
+			if (access.IsOAuthed() && access.tweets.Count > 0) {
+				Tweet newTweet = access.tweets.Dequeue();
 				if (newTweet.status.Contains("@" + access.screenName) && OnTweet != null) {
 					Debug.Log("TWEET!");
 					OnTweet(newTweet);
 				}
 			}
 
-			yield return new WaitForEndOfFrame();
+//			yield return new WaitForEndOfFrame();
+//			Debug.Log("CHECKING");
+			yield return new WaitForSeconds(3);
 		}
 	}
 }
